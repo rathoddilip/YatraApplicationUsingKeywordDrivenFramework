@@ -7,8 +7,7 @@ public class LoginTest {
 
     public String sheetName="loginCredentials";
     @Test
-    public void loginToApplication()
-    {
+    public void loginToApplication() throws InterruptedException {
         KeyWordEngine  keyWordEngine=new KeyWordEngine();
         keyWordEngine.startExecution(sheetName);
     }

@@ -9,21 +9,25 @@ import com.selenium.keyword.base.BaseClass;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class KeyWordEngine extends BaseClass {
 
     public BaseClass baseClass;
     public Properties property;
     public final String filePath = "/home/arjun/Dilip/YatraApplicationKeywordDrivenFramework/src/main/resources/YatraLoginCreadentials.xlsx";
-    public static XSSFWorkbook workbok;
+    public static XSSFWorkbook workbook;
     public static XSSFSheet sheet;
-    WebElement element;
+    public WebElement element;
+    public Actions actions;
 
     public void startExecution(String sheetName) {
+
         String locatorValue = null;
         String locatorName = null;
         FileInputStream fileInputStream = null;
@@ -34,20 +38,21 @@ public class KeyWordEngine extends BaseClass {
             e.printStackTrace();
         }
         try {
-            workbok = (XSSFWorkbook) WorkbookFactory.create(fileInputStream);
+            assert fileInputStream != null;
+            workbook = (XSSFWorkbook) WorkbookFactory.create(fileInputStream);
         } catch (IOException | InvalidFormatException exception) {
             exception.printStackTrace();
         }
-        sheet = workbok.getSheet(sheetName);
+        sheet = workbook.getSheet(sheetName);
         System.out.println("Last row Number: " + sheet.getLastRowNum());
         int k = 0;
         for (int i = 0; i < sheet.getLastRowNum(); i++) {
-            try {
 
+            try {
                 String locatorColValue = sheet.getRow(i + 1).getCell(k + 1).toString().trim();//xpath=username
                 if (!locatorColValue.equalsIgnoreCase("NA")) {
-                    locatorName = locatorColValue.split("=")[0].trim();//xpath
-                    locatorValue = locatorColValue.split("=")[1].trim();//username
+                    locatorName = locatorColValue.split(",")[0].trim();//xpath
+                    locatorValue = locatorColValue.split(",")[1].trim();//username
                 }
                 String action = sheet.getRow(i + 1).getCell(k + 2).toString().trim();
                 String value = sheet.getRow(i + 1).getCell(k + 3).toString().trim();
@@ -66,52 +71,63 @@ public class KeyWordEngine extends BaseClass {
                         if (value.isEmpty() || value.equals("NA")) {
                             driver.get(property.getProperty("url"));
                             System.out.println("In url");
-                            Thread.sleep(500);
                         } else {
                             driver.get(value);
-
                         }
                         break;
+
                     case "quit":
-                        driver.quit();
+//                        driver.quit();
                         break;
                     default:
                         break;
                 }
 
+                if (locatorName != null) {
+                    switch (locatorName) {
 
-                switch (locatorName) {
+                        case "xpath":
+                            assert locatorValue != null;
+                            actions = new Actions(driver);
+                            if (action.equalsIgnoreCase("signIn")) {
 
-                    case "xpath":
-                        element = driver.findElement(By.xpath(locatorValue));
-                        if (action.equalsIgnoreCase("sendkeys")) {
-                            element.clear();
-                            element.sendKeys(value);
-                        } else if (action.equalsIgnoreCase("click")) {
-                            element.click();
-                        } else if (action.equalsIgnoreCase("mouseHover")) {
-                            Actions actions = new Actions(driver);
-                            //Hovering on my account menu
-                            actions.moveToElement(element);
-                           //actions.moveToElement(driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath"))));
-                            Thread.sleep(300);
-                        }
-                        break;
+                                element = driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath")));
+                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                                actions.moveToElement(element);
+                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                                element = driver.findElement(By.id(property.getProperty("signInBtn.id")));
+                                actions.moveToElement(element).build().perform();
+                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                                driver.findElement(By.id(property.getProperty("signInBtn.id"))).click();
+                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-                    case "id":
-                        element = driver.findElement(By.id(locatorValue));
-                        if (action.equalsIgnoreCase("signInbtn")) {
-                            element.clear();
-                        } else if (action.equalsIgnoreCase("click")) {
-                            element.click();
-                        }
-                        break;
+                            } else if (action.equalsIgnoreCase("email sendkeys")) {
+                                element = driver.findElement(By.xpath(property.getProperty("emailId.xpath")));
+                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                                element.sendKeys(value);
+                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+                                driver.findElement(By.xpath(property.getProperty("continueButton.xpath"))).click();
+                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 
-                    default:
-                        break;
+                            } else if (action.equalsIgnoreCase("password sendkeys")) {
+                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+                                element = driver.findElement(By.xpath(property.getProperty("password.xpath")));
+                                element.sendKeys(value);
+                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
+                            } else if (action.equalsIgnoreCase("click")) {
+                                element = driver.findElement(By.xpath(property.getProperty("loginButton.xpath")));
+                                element.click();
+                                driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+                            }
+                            locatorName = null;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            } catch (Exception exception) {
-                exception.getStackTrace();
+            } catch (Exception ignored) {
+
             }
         }
     }

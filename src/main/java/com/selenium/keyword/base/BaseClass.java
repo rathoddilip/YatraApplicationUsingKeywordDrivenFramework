@@ -3,11 +3,11 @@ package com.selenium.keyword.base;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 public class BaseClass {
 
@@ -19,11 +19,12 @@ public class BaseClass {
 
         if (browserName.equalsIgnoreCase("chrome")) {
 
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-notifications");
             WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver();
             driver.manage().window().maximize();
             Thread.sleep(400);
-//            driver.manage().timeouts().implicitlyWait(400, TimeUnit.SECONDS);
         }
         return driver;
     }
