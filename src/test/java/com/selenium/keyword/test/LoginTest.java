@@ -4,6 +4,7 @@ import com.selenium.keyword.base.BaseClass;
 import com.selenium.keyword.utility.CustomListener;
 import com.selenium.keyword.utility.KeyWordEngine;
 import io.qameta.allure.*;
+import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -21,6 +22,8 @@ public class LoginTest extends BaseClass {
     public void loginToApplication(){
         KeyWordEngine  keyWordEngine=new KeyWordEngine();
         keyWordEngine.startExecution(sheetName);
-
+        String expectedUrl="https://www.yatra.com/";
+        String actualUrl=driver.getCurrentUrl();
+        Assert.assertEquals(actualUrl,expectedUrl);
     }
 }
