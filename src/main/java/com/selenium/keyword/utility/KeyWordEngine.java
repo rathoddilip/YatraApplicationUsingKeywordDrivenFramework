@@ -8,7 +8,6 @@ import org.openqa.selenium.By;
 import com.selenium.keyword.base.BaseClass;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +25,6 @@ public class KeyWordEngine extends BaseClass {
     public static XSSFSheet sheet;
     public WebElement element;
     public Actions actions;
-
 
     public void startExecution(String sheetName) {
 
@@ -59,10 +57,10 @@ public class KeyWordEngine extends BaseClass {
         for (int i = 0; i < sheet.getLastRowNum(); i++) {
 
             try {
-                String locatorColValue = sheet.getRow(i + 1).getCell(k + 1).toString().trim();//xpath=username
+                String locatorColValue = sheet.getRow(i + 1).getCell(k + 1).toString().trim();//xpath=a[text()='My Account']
                 if (!locatorColValue.equalsIgnoreCase("NA")) {
                     locatorName = locatorColValue.split(",")[0].trim();//xpath
-                    locatorValue = locatorColValue.split(",")[1].trim();////a[text()='My Account']
+                    locatorValue = locatorColValue.split(",")[1].trim();//a[text()='My Account']
                 }
                 String action = sheet.getRow(i + 1).getCell(k + 2).toString().trim();
                 String value = sheet.getRow(i + 1).getCell(k + 3).toString().trim();
@@ -99,8 +97,7 @@ public class KeyWordEngine extends BaseClass {
                             if (action.equalsIgnoreCase("signIn")) {
 
                                 driver.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
-//                                element = driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath")));
-                                element=driver.findElement(By.xpath(locatorName));
+                                element = driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath")));
                                 actions.moveToElement(element);
 
                                 element = driver.findElement(By.id(property.getProperty("signInBtn.id")));
@@ -110,7 +107,6 @@ public class KeyWordEngine extends BaseClass {
                             } else if (action.equalsIgnoreCase("email sendkeys")) {
                                 element = driver.findElement(By.xpath(property.getProperty("emailId.xpath")));
                                 element.sendKeys(value);
-
                                 driver.findElement(By.xpath(property.getProperty("continueButton.xpath"))).click();
 
 
@@ -123,6 +119,14 @@ public class KeyWordEngine extends BaseClass {
                             } else if (action.equalsIgnoreCase("click")) {
                                 element = driver.findElement(By.xpath(property.getProperty("loginButton.xpath")));
                                 element.click();
+
+                            }else if(action.equalsIgnoreCase("click on logout")){
+                                element=driver.findElement(By.xpath(property.getProperty("profileDropDownToggle.xpath")));
+                                actions.moveToElement(element);
+                                element=driver.findElement(By.xpath(property.getProperty("logoutLink.xpath")));
+                                actions.moveToElement(element).build().perform();
+                                element.click();
+
                             }
                             locatorName = null;
                             break;

@@ -32,6 +32,7 @@ public class BaseClass {
     }
 
     public Properties initProperties() {
+
         property = new Properties();
         try {
             FileInputStream fileInputStream = new FileInputStream("/home/arjun/Dilip/YatraApplicationKeywordDrivenFramework/src/main/java/com/selenium/keyword/config/config.properties");
@@ -41,9 +42,9 @@ public class BaseClass {
         }
         return property;
     }
+
     @AfterTest
-    public void closeBrowser()
-    {
+    public void closeBrowser() {
         driver.quit();
     }
 }

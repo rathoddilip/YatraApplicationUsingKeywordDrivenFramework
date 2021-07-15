@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.selenium.keyword.test.LoginTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-07-15T08:44:20" hostname="arjun-HP-Laptop-15-bs0xx" time="26.419">
+<testsuite name="com.selenium.keyword.test.LoginTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-07-15T18:08:51" hostname="arjun-HP-Laptop-15-bs0xx" time="30.046">
   <properties/>
-  <testcase name="loginToApplication" classname="com.selenium.keyword.test.LoginTest" time="26.419"/>
-  <system-out><![CDATA[Last row Number: 6
+  <testcase name="loginToApplication" classname="com.selenium.keyword.test.LoginTest" time="30.046"/>
+  <system-out><![CDATA[Last row Number: 7
 SUCCESS Test
 ]]></system-out>
-  <system-err><![CDATA[Starting ChromeDriver 91.0.4472.101 (af52a90bf87030dd1523486a1cd3ae25c5d76c9b-refs/branch-heads/4472@{#1462}) on port 15236
+  <system-err><![CDATA[Starting ChromeDriver 91.0.4472.101 (af52a90bf87030dd1523486a1cd3ae25c5d76c9b-refs/branch-heads/4472@{#1462}) on port 14794
 Only local connections are allowed.
 Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
 ChromeDriver was started successfully.
-Jul 15, 2021 2:14:23 PM org.openqa.selenium.remote.ProtocolHandshake createSession
+Jul 15, 2021 11:38:53 PM org.openqa.selenium.remote.ProtocolHandshake createSession
 INFO: Detected dialect: W3C
 ]]></system-err>
 </testsuite>
