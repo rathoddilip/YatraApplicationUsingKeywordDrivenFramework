@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import com.selenium.keyword.base.BaseClass;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +27,19 @@ public class KeyWordEngine extends BaseClass {
     public WebElement element;
     public Actions actions;
 
+
     public void startExecution(String sheetName) {
 
         String locatorValue = null;
         String locatorName = null;
+        File file = new File(filePath);
+        try {
+            if (!file.exists()) {
+                throw new CustomException(CustomException.ExceptionType.FILE_NOT_EXIST, "Please check file path and file name");
+            }
+        } catch (CustomException exception) {
+            System.out.println(exception.getMessage());
+        }
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(filePath);
@@ -52,7 +62,7 @@ public class KeyWordEngine extends BaseClass {
                 String locatorColValue = sheet.getRow(i + 1).getCell(k + 1).toString().trim();//xpath=username
                 if (!locatorColValue.equalsIgnoreCase("NA")) {
                     locatorName = locatorColValue.split(",")[0].trim();//xpath
-                    locatorValue = locatorColValue.split(",")[1].trim();//username
+                    locatorValue = locatorColValue.split(",")[1].trim();////a[text()='My Account']
                 }
                 String action = sheet.getRow(i + 1).getCell(k + 2).toString().trim();
                 String value = sheet.getRow(i + 1).getCell(k + 3).toString().trim();
@@ -76,9 +86,6 @@ public class KeyWordEngine extends BaseClass {
                         }
                         break;
 
-                    case "quit":
-//                        driver.quit();
-                        break;
                     default:
                         break;
                 }
@@ -91,34 +98,31 @@ public class KeyWordEngine extends BaseClass {
                             actions = new Actions(driver);
                             if (action.equalsIgnoreCase("signIn")) {
 
-                                element = driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath")));
-                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                                driver.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
+//                                element = driver.findElement(By.xpath(property.getProperty("myAccountDropDownToggle.xpath")));
+                                element=driver.findElement(By.xpath(locatorName));
                                 actions.moveToElement(element);
-                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+
                                 element = driver.findElement(By.id(property.getProperty("signInBtn.id")));
                                 actions.moveToElement(element).build().perform();
-                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
                                 driver.findElement(By.id(property.getProperty("signInBtn.id"))).click();
-                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
                             } else if (action.equalsIgnoreCase("email sendkeys")) {
                                 element = driver.findElement(By.xpath(property.getProperty("emailId.xpath")));
-                                driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
                                 element.sendKeys(value);
-                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
                                 driver.findElement(By.xpath(property.getProperty("continueButton.xpath"))).click();
-                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
 
                             } else if (action.equalsIgnoreCase("password sendkeys")) {
-                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
                                 element = driver.findElement(By.xpath(property.getProperty("password.xpath")));
                                 element.sendKeys(value);
-                                driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
 
                             } else if (action.equalsIgnoreCase("click")) {
                                 element = driver.findElement(By.xpath(property.getProperty("loginButton.xpath")));
                                 element.click();
-                                driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
                             }
                             locatorName = null;
                             break;

@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.testng.annotations.AfterTest;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,13 +17,14 @@ public class BaseClass {
 
     public WebDriver initDriver(String browserName) throws InterruptedException {
 
-
         if (browserName.equalsIgnoreCase("chrome")) {
 
+            //handle browser level show notification pop window
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--disable-notifications");
             WebDriverManager.chromedriver().setup();
-            driver = new ChromeDriver();
+            //launching chrome browser
+            driver = new ChromeDriver(options);
             driver.manage().window().maximize();
             Thread.sleep(400);
         }
@@ -38,5 +40,10 @@ public class BaseClass {
             e.printStackTrace();
         }
         return property;
+    }
+    @AfterTest
+    public void closeBrowser()
+    {
+        driver.quit();
     }
 }
